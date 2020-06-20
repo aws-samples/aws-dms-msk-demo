@@ -1,0 +1,1 @@
+{"data":{"orderId":1,"source":"android","amount":"20","state":"Ohio","date":"2020-05-30T10:34:43Z"},"metadata":{"timestamp":"2020-05-30T10:34:47.209089Z","record-type":"data","operation":"delete","partition-key-type":"schema-table","schema-name":"testdb","table-name":"dmstest","transaction-id":12893313321}}

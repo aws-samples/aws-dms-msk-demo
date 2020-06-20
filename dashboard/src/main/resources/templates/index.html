@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello DMS-MSK</title>
+    <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/webjars/jquery/jquery.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+    <style>
+        .records {
+           border:1px outset black; float:left; font-size:12px; width:800px; overflow-y: auto; height: 170px; background-color: #ffad33;
+        }
+    </style>
+</head>
+<body>
+<h1>Orders across states for current session</h1>
+<div style=" width:800px;  height: 400px;">
+    <div style="width:600px;  height: 400px; float: left;">
+
+        <canvas id="myChart"></canvas>
+    </div>
+    <div style="margin-left: 650px; margin-top: 50px; height: 200px; text-align: center">
+        <p style="align:center; font-size:18px;color:blue;font-family:'Comic Sans MS'">Order Count Current Session:</p>
+        <p style="align:center; font-size:13px;color:blue;font-family:'Comic Sans MS'"><br>INSERTED:</p>
+        <p id="counter" style="align:center; font-size:22px;color:blue;font-family:'Comic Sans MS'">38</p>
+        <p style="align:center; font-size:13px;color:blue;font-family:'Comic Sans MS'"><br>UPDATED:</p>
+        <p id="counter_updated" style="align:center; font-size:22px;color:lightblue;font-family:'Comic Sans MS'">0</p>
+        <p style="align:center; font-size:13px;color:blue;font-family:'Comic Sans MS'"><br>DELETED:</p>
+        <p id="counter_deleted" style="align:center; font-size:22px;color:red;font-family:'Comic Sans MS'">0</p>
+    </div>
+</div>
+<p >Order record logs</p>
+<div id="records" class="records" />
+
+<script type="application/javascript" >
+    var totalOrders = 38;
+    var totalUpdated = 0;
+    var totalDeleted = 0;
+    var stompClient = null;
+
+
+    var socket = new SockJS('/get-orders');
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, function (frame) {
+        stompClient.subscribe('/topic/orders', function (order) {
+            appendOrders(order.body);
+
+        });
+    });
+
+    var cities = ["California", "Texas", "Florida", "New York", "Ohio"]
+    var orderCount = [10,5,6,7,10];
+    var ctx = document.getElementById("myChart");
+    var myChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: cities,
+        datasets: [
+          {
+            data: orderCount,
+            backgroundColor: ["rgb(44, 99, 132, 0.9)", "rgb(10, 199, 33, 0.9)", "rgb(240, 99, 132, 0.9)",
+                              "rgb(33, 199, 132, 0.9)", "rgb(110, 99, 132, 0.9)"],
+            borderColor: ['blue', 'red', 'red', 'green', 'orange'],
+            borderWidth: 1
+          }
+        ]
+      },
+      options : {
+              scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            },
+			responsive : true,
+			title : {
+				display : true,
+				text : 'Live Orders By State',
+				fontSize: '20',
+				fontFamily: 'Comic Sans MS',
+				fontColor: 'blue'
+			},
+			tooltips : {
+				mode : 'index',
+				intersect : false
+			},
+			legend : {
+			    display: false
+			}
+
+		}
+    });
+
+    function appendOrders(order){
+        var orderJson = JSON.parse(order);
+        if(orderJson.operation == "INSERT")
+            totalOrders += 1;
+        else if(orderJson.operation == "UPDATE")
+            totalUpdated += 1;
+        else
+            totalDeleted += 1;
+
+
+        var para = document.createElement("P");
+      para.innerHTML = order;
+        document.getElementById("records").appendChild(para);
+        document.getElementById("records").scrollTop = document.getElementById("records").scrollHeight;
+
+        if(orderJson.operation == "INSERT")
+        {
+
+            if(orderJson.state == "California")
+                orderCount[0] += 1;
+            else if(orderJson.state == "Texas")
+                orderCount[1] += 1;
+            else if(orderJson.state == "Florida")
+                orderCount[2] += 1;
+            else if(orderJson.state == "New York")
+                orderCount[3] += 1;
+            else
+                orderCount[4] += 1;
+
+            myChart.data.datasets.forEach((dataset) => {
+            dataset.data = orderCount;
+             });
+            myChart.update();
+        }
+        document.getElementById("counter").innerText = totalOrders;
+        document.getElementById("counter_updated").innerText = totalUpdated;
+        document.getElementById("counter_deleted").innerText = totalDeleted;
+    }
+    </script>
+</body>
+</html>
