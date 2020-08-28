@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: AWS DMS Blog
+Description: AWS DMS to Amazon MSK pipeline infrastructure.
 Metadata:
   'AWS::CloudFormation::Interface':
     ParameterGroups:
