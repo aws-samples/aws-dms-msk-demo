@@ -37,33 +37,45 @@ Below diagram shows what we are implementing.
 ### Setup the sample Applications and then the testing pipeline
 * Login to the client ec2 instance created by the cloudformation.
 * Download the sample code via below command
-
-    `git clone https://github.com/aws-samples/aws-dms-msk-demo.git`
+    ```
+    git clone https://github.com/aws-samples/aws-dms-msk-demo.git
+    ```
 * Run the below commands to build the applications
     
-    `cd aws-dms-msk-demo`
+  ```
+    cd aws-dms-msk-demo
     
-    `mvn clean install`
-* Connect to Mysql before running the below command at the 
+    mvn clean install
+  ```
+* Connect to Mysql by running the below command. Replace the db host name by Aurora
+db host endpoint that was created by the cloudformation. It can be found from the RDS console under Connectivity & 
+endpoint section. Default username is 'master' and default password is 'Password1'. testdb is the default DB getting created
+via cloudformation.
+  ```
+    mysql –u <username> -p -h <hostname or IP address> testdb 
+  ```   
 
-    `mysql –u <username> -p<password> -h <hostname or IP address> <databases>` 
- 
 * At SQL prompt run the below command to create the sample table named ‘dmstest’ in database: ‘testdb’.
-
-    `SQL > create table ‘dmstest’ (‘orderid’ bigint(20 NOT NULL,
-    ‘source’ varchar(45) NOT NULL default ‘andriod’,
-    ‘amount’ varchar(45) NOT NULL default ‘0’,
-    ‘state varchar(45) NOT NULL default ‘New Jersey’,
-    ‘date’ datetime NOT NULL default current_timestamp,
-    Primary key (‘orderid))`
-    
+    ```
+    SQL > create table dmstest (orderid bigint(20) NOT NULL,
+    source varchar(45) NOT NULL default 'andriod',
+    amount varchar(45) NOT NULL default '0',
+    state varchar(45) NOT NULL default 'New Jersey',
+    date datetime NOT NULL default current_timestamp,
+    Primary key (orderid));
+    ```     
+     
+        
 * Also run this to AWS DMS has bin log access that is required for replication
- 
-    `call  mysql.rds_set_configuration(‘binlog retention hours’, 24);`    
-* Run the below command to launch the dashboard in client ec2 instance. You have to replace the broker endpoints before running.
+   ```
+    call  mysql.rds_set_configuration('binlog retention hours', 24);
+   ```    
+* Hit cmd + z and come out of the SQL prompt.Run the below command to launch the dashboard in client ec2 instance. You have to replace the broker endpoints before running.
 These can be found in MSK cluster's (_created by cloudformation above_) client information.
-
-    `java –jar aws-dms-msk-demo/dashboard/target/dashboard-1.0.jar –kafka.bootstrap-server <broker-endpoint>:9092 –topic dms-blog`
+    ```
+    java –jar aws-dms-msk-demo/dashboard/target/dashboard-1.0.jar --kafka.bootstrap-server <broker-endpoint>:9092 –topic dms-blog
+    ```
+    java -jar aws-dms-msk-demo/dashboard/target/dashboard-1.0.jar -kafka.bootstrap-server b-1.mskmmcluster1.x1z1i4.c2.kafka.ap-southeast-1.amazonaws.com:9092 -topic dms-blog
 * From your laptop's browser open http://<Public_IP_of_the_EC2_instance>:8080/
     You should see something like below screen
    ![Alt text](content/images/screen-1.png?raw=true "Pipeline")
@@ -72,17 +84,22 @@ These can be found in MSK cluster's (_created by cloudformation above_) client i
     * Open a new ssh session to the client EC2.
     * Use the datagen.jar utility present in the cloned git repo to generate sample data in bulk of 2000 records.
     
-        `java –jar aws-dms-msk-demo/data-gen-utility/target/datagen.jar`
+    ```
+    java –jar aws-dms-msk-demo/data-gen-utility/target/datagen.jar
+    ```
     * When prompted enter 2000 for records and 1 for start index.
         *    *.sql file is generated with 2000 dummy order records.
     * Connect to the database again using below command. This will insert all your dummy 
     data into your Aurora mysql DB that was generated via CloudFormation.
     
-        `mysql –u <username> -p database_name –h <hostname or IP> <xxx.sql` 
+    ```
+    mysql –u <username> -p database_name –h <hostname or IP> <xxx.sql 
+    ```
     * Now, let’s Start DMS task via aws cli so as our data starts getting replicated to MSK
     
-        `aws dms-start-replication-task –replication-task-arn <dms task arn> --start-replication-task-type start-replication`
-    
+    ```
+    aws dms-start-replication-task –replication-task-arn <dms task arn> --start-replication-task-type start-replication
+    ```
     * Check the dashboard and you will see graph updating on it.
     
     * You have successfully created the pipeline and transferred the data. Feel free to checkout the code or 
