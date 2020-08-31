@@ -11,6 +11,7 @@
 
 #### Start sending messages
 `bin/kafka-console-producer.sh --bootstrap-server localhost:9092 --topic dms-blog`
+`bin/kafka-console-producer.sh --bootstrap-server "b-2.mskmmcluster1.x1z1i4.c2.kafka.ap-southeast-1.amazonaws.com:9094,b-1.mskmmcluster1.x1z1i4.c2.kafka.ap-southeast-1.amazonaws.com:9094" --topic dms-blog`
 
 
 
