@@ -12,7 +12,7 @@
     "operation":	"insert",
     "partition-key-type":	"schema-table",
     "schema-name":	"testdb",
-    "table-name":	"dmstest",
+    "table-name":	"orders",
     "transaction-id":	12893313321
   }
 }

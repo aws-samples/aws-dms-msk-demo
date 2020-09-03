@@ -1,4 +1,4 @@
-CREATE TABLE `dmstest` (
+CREATE TABLE `orders` (
   `orderId` bigint(20) NOT NULL,
   `source` varchar(45) NOT NULL DEFAULT 'andriod',
   `amount` varchar(45) NOT NULL DEFAULT '0',

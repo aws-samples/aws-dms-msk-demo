@@ -28,7 +28,7 @@ public class App {
             }
         }
 
-        StringBuilder dummyData = new StringBuilder("INSERT INTO `testdb`.`dmstest` (`orderId`, `source`, `amount`, `state`) values \n");
+        StringBuilder dummyData = new StringBuilder("INSERT INTO `testdb`.`orders` (`orderId`, `source`, `amount`, `state`) values \n");
         String[] arrStates = new String[]{ ",'California'),", ",'Texas'),", ",'Florida'),", ",'New York'),", ",'Ohio'),"};
         String[] arrSources = new String[]{",'Andriod',", ",'iOS',", ",'Windows',", ",'MacOS',"};
 

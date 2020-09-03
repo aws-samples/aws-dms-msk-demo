@@ -55,9 +55,9 @@ via cloudformation.
     mysql –u <username> -p -h <hostname or IP address> testdb 
   ```   
 
-* At SQL prompt run the below command to create the sample table named ‘dmstest’ in database: ‘testdb’.
+* At SQL prompt run the below command to create the sample table named ‘orders’ in database: ‘testdb’.
     ```
-    SQL > create table dmstest (orderid bigint(20) NOT NULL,
+    SQL > create table orders (orderid bigint(20) NOT NULL,
     source varchar(45) NOT NULL default 'andriod',
     amount varchar(45) NOT NULL default '0',
     state varchar(45) NOT NULL default 'New Jersey',
@@ -71,11 +71,14 @@ via cloudformation.
     call  mysql.rds_set_configuration('binlog retention hours', 24);
    ```    
 * Hit cmd + z and come out of the SQL prompt.Run the below command to launch the dashboard in client ec2 instance. You have to replace the broker endpoints before running.
-These can be found in MSK cluster's (_created by cloudformation above_) client information.
+These can be found in MSK cluster's (_created by cloudformation above_) client information. 
+[Refer this link](https://docs.aws.amazon.com/msk/latest/developerguide/msk-get-bootstrap-brokers.html) to get broker list.
+
+Note: Get the plaintext link and not the TLS as it requires some extra configuration at client side to work. 
+[Refer this link](https://docs.aws.amazon.com/msk/latest/developerguide/msk-authentication.html) if you want to connect via TLS.  
     ```
-    java –jar aws-dms-msk-demo/dashboard/target/dashboard-1.0.jar --kafka.bootstrap-server <broker-endpoint>:9092 –topic dms-blog
+    java –jar aws-dms-msk-demo/dashboard/target/dashboard-1.0.jar --kafka.bootstrapEndpoints=<broker-endpoint>:9092 –-kafka.topic=dms-blog
     ```
-    java -jar aws-dms-msk-demo/dashboard/target/dashboard-1.0.jar -kafka.bootstrap-server b-1.mskmmcluster1.x1z1i4.c2.kafka.ap-southeast-1.amazonaws.com:9092 -topic dms-blog
 * From your laptop's browser open http://<Public_IP_of_the_EC2_instance>:8080/
     You should see something like below screen
    ![Alt text](content/images/screen-1.png?raw=true "Pipeline")
@@ -93,7 +96,7 @@ These can be found in MSK cluster's (_created by cloudformation above_) client i
     data into your Aurora mysql DB that was generated via CloudFormation.
     
     ```
-    mysql –u <username> -p database_name –h <hostname or IP> <xxx.sql 
+    mysql –u <username> -p database_name –h <hostname or IP> testdb <xxx.sql 
     ```
     * Now, let’s Start DMS task via aws cli so as our data starts getting replicated to MSK
     

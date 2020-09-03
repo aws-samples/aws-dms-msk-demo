@@ -5,6 +5,6 @@
     "operation":	"create-table",
     "partition-key-type":	"task-id",
     "schema-name":	"testdb",
-    "table-name":	"dmstest"
+    "table-name":	"orders"
   }
 }
