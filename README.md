@@ -110,6 +110,15 @@ Note: Get the plaintext link and not the TLS as it requires some extra configura
     * You have successfully created the pipeline and transferred the data. Feel free to checkout the code or 
     insert/remove/update data from your database. It should get reflected on your board.  
 
+## CleanUp
+*	Delete the CloudFormation stack.
+*	Clean the resources that are dynamically created.
+     * Go to Services, then DMS and click endpoints in the left navigation.
+     *	Delete “dms-blog-kafka-target” DMS endpoints.
+*	Delete any CloudWatch log-groups if got created.
+     * Go to Services, then CloudWatch and click “Log groups” in the navigation pane.    
+     * Delete any Log groups with name “Streaming-DMS-MSK” or use the stack name if you changed it from default while creating the stack.
+    
 ## Security
 
 See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
