@@ -30,7 +30,8 @@ Below diagram shows what we are implementing.
 
 ### Setup the pipeline
 * Refer the documentation and create a dms-vpc-role. [Create IAM Role](https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Security.html#CHAP_Security.APIRole)
-* Run the cloudformation at content/cfn folder in your account. Or just click on this [![Launch Stack](https://cdn.rawgit.com/buildkite/cloudformation-launch-stack-button-svg/master/launch-stack.svg)](https://us-east-2.console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/create/review?templateURL=https://aws-database-blog.s3.amazonaws.com/artifacts/Apache_kafka_in_DMS/master-cfn2.yaml&stackName=Streaming-DMS-MSK-Pipeline)
+* Run the cloudformation at content/cfn folder in your account. Or just click below button <br />
+ [![Launch Stack](https://cdn.rawgit.com/buildkite/cloudformation-launch-stack-button-svg/master/launch-stack.svg)](https://us-east-2.console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/create/review?templateURL=https://aws-database-blog.s3.amazonaws.com/artifacts/Apache_kafka_in_DMS/master-cfn2.yaml&stackName=Streaming-DMS-MSK-Pipeline)
 * Enter required parameters and click create.
 * Your pipeline should be up and running in 15-20 mins.
 
