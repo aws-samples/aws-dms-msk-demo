@@ -99,10 +99,11 @@ Note: Get the plaintext link and not the TLS as it requires some extra configura
     ```
     mysql –u <username> -p database_name –h <hostname or IP> testdb <xxx.sql 
     ```
-    * Now, let’s Start DMS task via aws cli so as our data starts getting replicated to MSK
+    * Now, let’s Start DMS task via aws cli so as our data starts getting replicated to MSK. Before running replace the 
+    DMS task ARN. You can find it in the AWS Console, under DMS service.
     
     ```
-    aws dms-start-replication-task –replication-task-arn <dms task arn> --start-replication-task-type start-replication
+    aws dms-start-replication-task –-replication-task-arn <dms task arn> --start-replication-task-type start-replication
     ```
     * Check the dashboard and you will see graph updating on it.
     
