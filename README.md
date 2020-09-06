@@ -31,7 +31,7 @@ Below diagram shows what we are implementing.
 ### Setup the pipeline
 * Refer the documentation and create a dms-vpc-role. [Create IAM Role](https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Security.html#CHAP_Security.APIRole)
 * Run the cloudformation at content/cfn folder in your account. Or just click below button <br />
- [![Launch Stack](https://cdn.rawgit.com/buildkite/cloudformation-launch-stack-button-svg/master/launch-stack.svg)](https://us-east-2.console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/create/review?templateURL=https://aws-database-blog.s3.amazonaws.com/artifacts/Apache_kafka_in_DMS/master-cfn2.yaml&stackName=Streaming-DMS-MSK-Pipeline)
+ [![Launch Stack](https://cdn.rawgit.com/buildkite/cloudformation-launch-stack-button-svg/master/launch-stack.svg)](https://us-east-2.console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/create/review?templateURL=https://github.com/aws-samples/aws-dms-msk-demo/blob/master/content/cfn/master-cfn.yaml&stackName=Streaming-DMS-MSK-Pipeline)
 * Enter required parameters and click create.
 * Your pipeline should be up and running in 15-20 mins.
 
@@ -103,7 +103,7 @@ Note: Get the plaintext link and not the TLS as it requires some extra configura
     DMS task ARN. You can find it in the AWS Console, under DMS service.
     
     ```
-    aws dms-start-replication-task –-replication-task-arn <dms task arn> --start-replication-task-type start-replication
+    aws dms start-replication-task –-replication-task-arn <dms task arn> --start-replication-task-type start-replication
     ```
     * Check the dashboard and you will see graph updating on it.
     
@@ -111,7 +111,11 @@ Note: Get the plaintext link and not the TLS as it requires some extra configura
     insert/remove/update data from your database. It should get reflected on your board.  
 
 ## CleanUp
-*	Delete the CloudFormation stack.
+*	Stop the DMS Replication task by replacing the ARN in below command.
+    ```
+    aws dms stop-replication-task –-replication-task-arn <dms task arn>
+    ```
+*   Delete the CloudFormation stack.
 *	Clean the resources that are dynamically created.
      * Go to Services, then DMS and click endpoints in the left navigation.
      *	Delete “dms-blog-kafka-target” DMS endpoints.
