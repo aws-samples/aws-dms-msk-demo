@@ -351,6 +351,27 @@ Resources:
                   - 'dms:DescribeConnections'
                 Resource: ['*']
 
+  ClientEC2AccessRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: sts:AssumeRole
+      Path: /
+      Policies:
+        - PolicyName: BlogClientEc2DMSReplicationTask
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'dms:StartReplicationTask'
+                  - 'dms:StopReplicationTask'
+                Resource: ['*']
 
   CustomClusterConfigLambda:
     Type: AWS::Lambda::Function
@@ -380,7 +401,7 @@ Resources:
               if event['RequestType'] == 'Create':
                 print('Create stack call, MSK cluster config will be created')
                 r = kafka.create_configuration(
-                  Description='MSKMMCluster1 cluster configuration',
+                  Description='Streaming-Blog-MSKCluster cluster configuration',
                   KafkaVersions=[ '2.2.1'],
                   Name=randomString(),
                   ServerProperties=conf
@@ -398,7 +419,7 @@ Resources:
     Properties:
       ServiceToken: !GetAtt CustomClusterConfigLambda.Arn
 
-  MSKMMCluster1:
+  Streaming-Blog-MSKCluster:
     Type: 'AWS::MSK::Cluster'
     Properties:
       BrokerNodeGroupInfo:
@@ -414,7 +435,7 @@ Resources:
       ConfigurationInfo:
         Arn: !Ref CustomClusterConfig
         Revision: 1
-      ClusterName: MSKMMCluster1
+      ClusterName: Streaming-Blog-MSKCluster
       EncryptionInfo:
         EncryptionInTransit:
           ClientBroker: TLS_PLAINTEXT
@@ -471,6 +492,12 @@ Resources:
         - Endpoint.Address
       Username: !Ref MasterUsername
 
+  ClientEc2InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: "/"
+      Roles:
+        - !Ref ClientEC2AccessRole
 
   ClientEC2Instance:
     Type: 'AWS::EC2::Instance'
@@ -479,6 +506,7 @@ Resources:
       InstanceType: !Ref EC2InstanceType
       KeyName: !Ref KeyName
       SubnetId: !Ref Subnet1
+      IamInstanceProfile: !Ref ClientEc2InstanceProfile
       SecurityGroupIds:
         - !Ref InstanceSecurityGroup
       Tags:
@@ -536,7 +564,7 @@ Resources:
     Type: Custom::KafkfaEndpoint
     Properties:
       ServiceToken: !GetAtt CustomKafkaEndpointLambda.Arn
-      KafkaCluster: !Ref MSKMMCluster1
+      KafkaCluster: !Ref Streaming-Blog-MSKCluster
 
 
   CustomKafkaEndpointLambda:
@@ -697,9 +725,9 @@ Outputs:
   ReplicationInstance:
     Description: Replication Instance
     Value: !Ref ReplicationInstance
-  MSKMMCluster1:
-    Description: The Arn for the MSKMMCluster1 MSK cluster
-    Value: !Ref MSKMMCluster1
+  Streaming-Blog-MSKCluster:
+    Description: The Arn for the Streaming-Blog-MSKCluster MSK cluster
+    Value: !Ref Streaming-Blog-MSKCluster
   ReplicationTaskAuroraKafka:
     Description: Replication Task
     Value: !Ref ReplicationTaskAuroraKafka

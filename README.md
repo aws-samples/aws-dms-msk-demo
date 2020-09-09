@@ -99,13 +99,13 @@ These can be found in MSK cluster's (_created by cloudformation above_) client i
     data into your Aurora mysql DB that was generated via CloudFormation.
     
     ```
-    mysql –u <username> -p database_name –h <hostname or IP> testdb <xxx.sql 
+    mysql -u <username> -p -h <hostname or IP> testdb <xxx.sql 
     ```
     * Now, let’s Start DMS task via aws cli so as our data starts getting replicated to MSK. Before running replace the 
     DMS task ARN. You can find it in the AWS Console, under DMS service.
     
     ```
-    aws dms start-replication-task –-replication-task-arn <dms task arn> --start-replication-task-type start-replication
+    aws dms start-replication-task --replication-task-arn <dms task arn> --start-replication-task-type start-replication --region <regionid>
     ```
     * Check the dashboard and you will see graph updating on it.
     
@@ -115,7 +115,7 @@ These can be found in MSK cluster's (_created by cloudformation above_) client i
 ## CleanUp
 *	Stop the DMS Replication task by replacing the ARN in below command.
     ```
-    aws dms stop-replication-task –-replication-task-arn <dms task arn>
+    aws dms stop-replication-task --replication-task-arn <dms task arn> --region <regionid>
     ```
 *   Delete the CloudFormation stack.
 *	Clean the resources that are dynamically created.
@@ -126,7 +126,7 @@ These can be found in MSK cluster's (_created by cloudformation above_) client i
      * Delete any Log groups with name “Streaming-DMS-MSK” or use the stack name if you changed it from default while creating the stack.
 *   Delete MSK Cluster Configuration.
     * Go to Services, then MSK and click cluster configuration in the left navigation.
-    * Delete any configuration with name "MSKMMCluster1**" in it.      
+    * Delete any configuration with name containing "Streaming-Blog-MSKCluster" in it.      
 ## Security
 
 See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
