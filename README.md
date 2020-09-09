@@ -53,17 +53,17 @@ db host endpoint that was created by the cloudformation. It can be found from th
 endpoint section. Default username is 'master' and default password is 'Password1'. testdb is the default DB getting created
 via cloudformation.
   ```
-    mysql –u <username> -p -h <hostname or IP address> testdb 
+    mysql -u <username> -p -h <hostname or IP address> testdb 
   ```   
 
 * At SQL prompt run the below command to create the sample table named ‘orders’ in database: ‘testdb’.
     ```
-    SQL > create table orders (orderid bigint(20) NOT NULL,
+    SQL > create table orders (orderId bigint(20) NOT NULL,
     source varchar(45) NOT NULL default 'andriod',
     amount varchar(45) NOT NULL default '0',
     state varchar(45) NOT NULL default 'New Jersey',
     date datetime NOT NULL default current_timestamp,
-    Primary key (orderid));
+    Primary key (orderId));
     ```     
      
         
@@ -71,25 +71,27 @@ via cloudformation.
    ```
     call  mysql.rds_set_configuration('binlog retention hours', 24);
    ```    
-* Hit cmd + z and come out of the SQL prompt.Run the below command to launch the dashboard in client ec2 instance. You have to replace the broker endpoints before running.
+* Hit cmd/ctrl + z and come out of the SQL prompt.
+
+* Run the below command to launch the dashboard in client ec2 instance. You have to replace the broker endpoints before running.
 These can be found in MSK cluster's (_created by cloudformation above_) client information. 
 [Refer this link](https://docs.aws.amazon.com/msk/latest/developerguide/msk-get-bootstrap-brokers.html) to get broker list.
 
-Note: Get the plaintext link and not the TLS as it requires some extra configuration at client side to work. 
-[Refer this link](https://docs.aws.amazon.com/msk/latest/developerguide/msk-authentication.html) if you want to connect via TLS.  
+**Note: Get the plaintext link and not the TLS as it requires some extra configuration at client side to work. 
+[Refer this link](https://docs.aws.amazon.com/msk/latest/developerguide/msk-authentication.html) if you want to connect via TLS.**  
     ```
-    java –jar aws-dms-msk-demo/dashboard/target/dashboard-1.0.jar --kafka.bootstrapEndpoints=<broker-endpoint>:9092 –-kafka.topic=dms-blog
+    java -jar aws-dms-msk-demo/dashboard/target/dashboard-1.0.jar --kafka.bootstrapEndpoints=<broker-endpoint>:9092 –-kafka.topic=dms-blog
     ```
 * From your laptop's browser open http://<Public_IP_of_the_EC2_instance>:8080/
     You should see something like below screen
    ![Alt text](content/images/screen-1.png?raw=true "Pipeline")
-   
+**Note: If you are getting connection refused errors, most likely you have to open the ports in the EC2 Security group from your local IP** 
 * Generate test data and test the dashboard.
     * Open a new ssh session to the client EC2.
     * Use the datagen.jar utility present in the cloned git repo to generate sample data in bulk of 2000 records.
     
     ```
-    java –jar aws-dms-msk-demo/data-gen-utility/target/datagen.jar
+    java -jar aws-dms-msk-demo/data-gen-utility/target/datagen.jar
     ```
     * When prompted enter 2000 for records and 1 for start index.
         *    *.sql file is generated with 2000 dummy order records.
@@ -122,7 +124,9 @@ Note: Get the plaintext link and not the TLS as it requires some extra configura
 *	Delete any CloudWatch log-groups if got created.
      * Go to Services, then CloudWatch and click “Log groups” in the navigation pane.    
      * Delete any Log groups with name “Streaming-DMS-MSK” or use the stack name if you changed it from default while creating the stack.
-    
+*   Delete MSK Cluster Configuration.
+    * Go to Services, then MSK and click cluster configuration in the left navigation.
+    * Delete any configuration with name "MSKMMCluster1**" in it.      
 ## Security
 
 See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.

@@ -111,7 +111,7 @@ Parameters:
   IPCidrToAllowTraffic:
     Description: An IP address from where to allow ssh to client instance.
     Type: String
-    Default: 0.0.0.0/0
+    Default: X.X.X.X/32
 
   #changed
   KeyName:
@@ -175,8 +175,8 @@ Resources:
       VpcId: !Ref VPC
       SecurityGroupIngress:
         - IpProtocol: tcp
-          FromPort: 22
-          ToPort: 22
+          FromPort: 0
+          ToPort: 65535
           CidrIp: !Ref IPCidrToAllowTraffic
   SGBaseIngress:
     Type: AWS::EC2::SecurityGroupIngress
@@ -520,11 +520,9 @@ Resources:
 
           su -c "python3.7 get-pip.py --user" -s /bin/sh ec2-user
 
-          su -c "/home/ec2-user/.local/bin/pip3 install boto3 --user" -s /bin/sh
-          ec2-user
+          su -c "/home/ec2-user/.local/bin/pip3 install boto3 --user" -s /bin/sh ec2-user
 
-          su -c "/home/ec2-user/.local/bin/pip3 install awscli --user" -s
-          /bin/sh ec2-user
+          su -c "/home/ec2-user/.local/bin/pip3 install awscli --user" -s /bin/sh ec2-user
 
           chown -R ec2-user ./kafka
 
