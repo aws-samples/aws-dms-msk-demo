@@ -80,7 +80,7 @@ These can be found in MSK cluster's (_created by cloudformation above_) client i
 **Note: Get the plaintext link and not the TLS as it requires some extra configuration at client side to work. 
 [Refer this link](https://docs.aws.amazon.com/msk/latest/developerguide/msk-authentication.html) if you want to connect via TLS.**  
     ```
-    java -jar aws-dms-msk-demo/dashboard/target/dashboard-1.0.jar --kafka.bootstrapEndpoints=<broker-endpoint>:9092 –-kafka.topic=dms-blog
+    java -jar ~/aws-dms-msk-demo/dashboard/target/dashboard-1.0.jar --kafka.bootstrapEndpoints=<broker-endpoint>:9092 –-kafka.topic=dms-blog
     ```
 * From your laptop's browser open http://<Public_IP_of_the_EC2_instance>:8080/
     You should see something like below screen
